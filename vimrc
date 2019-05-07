@@ -94,10 +94,21 @@ colorscheme badwolf
 call togglebg#map("<F5>")
 " }}}
 " Movement {{{
+" Enable wrap movement by default
 nnoremap j gj
 nnoremap k gk
 nnoremap down dj
 nnoremap up gk
+" Disable Arrows key in normal mode
+map <up>    <nop>
+map <down>  <nop>
+map <left>  <nop>
+map <right> <nop>
+" Disable Arrows key in insert mode
+imap <up>    <nop>
+imap <down>  <nop>
+imap <left>  <nop>
+imap <right> <nop>
 " }}}
 " Windows navigation {{{
 nnoremap <C-J> <C-W><C-J>       " Down
