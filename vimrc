@@ -3,16 +3,20 @@ filetype off      " required
 
 " Automatic reloading of .vimrc
 autocmd! bufwritepost .vimrc source %
+autocmd! bufwritepost vimrc source %
 
 set encoding=utf-8
 set fileencoding=utf-8
 set termencoding=utf-8
 
 set rtp+=~/.vim/bundle/Vundle.vim
+set updatetime=100
 call vundle#begin()
 
 " Plugins {{{
 Plugin 'VundleVim/Vundle.vim' " required
+
+Plugin 'vim-airline/vim-airline'
 
 "Plugin 'https://github.com/tpope/vim-sexp-mappings-for-regular-people'
 "Plugin 'https://github.com/guns/vim-sexp'
@@ -43,6 +47,11 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'jnurmine/Zenburn'
 Plugin 'sjl/badwolf'
 
+"Git stuff
+Plugin 'tpope/vim-fugitive'
+Plugin 'jreybert/vimagit'
+Plugin 'airblade/vim-gitgutter'
+
 call vundle#end()
 " }}}
 " Default UI Editor settings {{{
@@ -65,6 +74,15 @@ set shiftwidth=4
 set shiftround
 set expandtab
 
+
+if has('mouse')
+    set mouse=a
+endif
+
+let s:uname = system("echo -n \"$(uname)\"")
+if !v:shell_error && s:uname == "linux" && !has('nvim')
+    set ttymouse=xterm
+endif
 
 filetype plugin indent on
 syntax on
@@ -89,8 +107,8 @@ set smartcase
 " }}}
 " Colorscheme {{{
 set background=dark
-" colorscheme solarized
-colorscheme badwolf
+colorscheme solarized
+"colorscheme badwolf
 call togglebg#map("<F5>")
 " }}}
 " Movement {{{
@@ -144,7 +162,7 @@ let g:miniBufExplModSelTarget=1
 " }}}
 " TagList {{{
 let Tlist_Ctags_Cmd='/usr/bin/ctags'    " Use Exuberant Ctags instead of GNU Ctags
-map P :TlistToggle<CR> 
+map P :TlistToggle<CR>
 " TaskList
 map T :TaskList<CR>
 " }}}
@@ -152,20 +170,28 @@ map T :TaskList<CR>
 au VimEnter * RainbowParenthesesToggle		" Toggle on/off
 au Syntax * RainbowParenthesesLoadRound		" () , default
 au Syntax * RainbowParenthesesLoadSquare	" []
-au Syntax * RainbowParenthesesLoadBraces	" {}	
+au Syntax * RainbowParenthesesLoadBraces	" {}
 au Syntax * RainbowParenthesesLoadChevrons	"<>
+" }}}
+" Airline {{{
+    let g:airline_powerline_fonts = 1
+    if !exists('g:airline_symbols')
+        let g:airline_symbols = {}
+    endif
+" }}}
+" Vimgutter {{{
 " }}}
 " }}}
 " Filetypes configuration {{{
 " ---- Python {{{
 au BufRead,BufNewFile *.py
-	\ set tabstop=4     |
-	\ set softtabstop=4 |
-	\ set shiftwidth=4  |
-	\ set textwidth=79  |
-	\ set expandtab     |
-	\ set autoindent    |
-	\ set fileformat=unix |
+    \ set tabstop=4         |
+    \ set softtabstop=4     |
+    \ set shiftwidth=4      |
+    \ set textwidth=79      |
+    \ set expandtab         |
+    \ set autoindent        |
+    \ set fileformat=unix   |
     \ set colorcolumn=80
 
 au BufRead,BufNewFile *.py,*.pyw,*.sh match BadWhitespace /\s\+$/
