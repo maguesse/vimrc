@@ -106,10 +106,16 @@ set ignorecase
 set smartcase
 " }}}
 " Colorscheme {{{
-set background=dark
-colorscheme solarized
-"colorscheme badwolf
-call togglebg#map("<F5>")
+try
+    set background=dark
+    colorscheme solarized
+    call togglebg#map("<F5>")
+catch
+    try
+        colorscheme badwolf
+    catch
+    endtry
+endtry
 " }}}
 " Movement {{{
 " Enable wrap movement by default
