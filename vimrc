@@ -18,16 +18,16 @@ Plugin 'VundleVim/Vundle.vim' " required
 
 Plugin 'vim-airline/vim-airline'
 
-"Plugin 'https://github.com/tpope/vim-sexp-mappings-for-regular-people'
-"Plugin 'https://github.com/guns/vim-sexp'
-"Plugin 'https://github.com/tpope/vim-repeat'
-"Plugin 'https://github.com/tpope/vim-surround'
-"Plugin 'https://github.com/guns/vim-clojure-static'
-"Plugin 'https://github.com/tpope/vim-fireplace'
-"Plugin 'https://github.com/tpope/vim-salve'
-Plugin 'https://github.com/kien/rainbow_parentheses.vim'
-"Plugin 'https://github.com/tpope/vim-projectionist'
-"Plugin 'https://github.com/tpope/vim-dispatch'
+"Plugin 'tpope/vim-sexp-mappings-for-regular-people'
+"Plugin 'guns/vim-sexp'
+"Plugin 'tpope/vim-repeat'
+"Plugin 'tpope/vim-surround'
+"Plugin 'guns/vim-clojure-static'
+"Plugin 'tpope/vim-fireplace'
+"Plugin 'tpope/vim-salve'
+Plugin 'kien/rainbow_parentheses.vim'
+"Plugin 'tpope/vim-projectionist'
+"Plugin 'tpope/vim-dispatch'
 
 Plugin 'fholgado/minibufexpl.vim'
 Plugin 'taglist.vim'
@@ -173,11 +173,13 @@ map P :TlistToggle<CR>
 map T :TaskList<CR>
 " }}}
 " Rainbow Parenthese {{{
-au VimEnter * RainbowParenthesesToggle		" Toggle on/off
-au Syntax * RainbowParenthesesLoadRound		" () , default
-au Syntax * RainbowParenthesesLoadSquare	" []
-au Syntax * RainbowParenthesesLoadBraces	" {}
-au Syntax * RainbowParenthesesLoadChevrons	"<>
+if &rtp =~ 'rainbow_parentheses'
+    au VimEnter * RainbowParenthesesToggle		" Toggle on/off
+    au Syntax * RainbowParenthesesLoadRound		" () , default
+    au Syntax * RainbowParenthesesLoadSquare	" []
+    au Syntax * RainbowParenthesesLoadBraces	" {}
+    au Syntax * RainbowParenthesesLoadChevrons	"<>
+endif
 " }}}
 " Airline {{{
     let g:airline_powerline_fonts = 1
