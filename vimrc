@@ -3,39 +3,39 @@ filetype off      " required
 
 " Automatic reloading of .vimrc
 autocmd! bufwritepost .vimrc source %
+autocmd! bufwritepost vimrc source %
 
 set encoding=utf-8
 set fileencoding=utf-8
 set termencoding=utf-8
 
 set rtp+=~/.vim/bundle/Vundle.vim
+set updatetime=100
 call vundle#begin()
 
 " Plugins {{{
 Plugin 'VundleVim/Vundle.vim' " required
 " General
 Plugin 'preservim/nerdtree'
-Plugin 'https://github.com/tpope/vim-surround'
-Plugin 'https://github.com/kien/rainbow_parentheses.vim'
+Plugin 'tpope/vim-surround'
+Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'scrooloose/syntastic'
-"Plugin 'https://github.com/tpope/vim-repeat'
+"Plugin 'tpope/vim-repeat'
 "Plugin 'fholgado/minibufexpl.vim'
 Plugin 'tmhedberg/SimpylFold'
 Plugin 'vim-airline/vim-airline'
 Plugin 'Valloric/YouCompleteMe' " /!\ Requires Vim 7.4.1578+ /!\
-Plugin 'tpope/vim-fugitive'
-Plugin 'airblade/vim-gitgutter'
 
 " Clojure
-"Plugin 'https://github.com/tpope/vim-sexp-mappings-for-regular-people'
-"Plugin 'https://github.com/guns/vim-sexp'
-"Plugin 'https://github.com/guns/vim-clojure-static'
-"Plugin 'https://github.com/tpope/vim-fireplace'
-"Plugin 'https://github.com/tpope/vim-salve'
+"Plugin 'tpope/vim-sexp-mappings-for-regular-people'
+"Plugin 'guns/vim-sexp'
+"Plugin 'guns/vim-clojure-static'
+"Plugin 'tpope/vim-fireplace'
+"Plugin 'tpope/vim-salve'
 
 " Project Management
-"Plugin 'https://github.com/tpope/vim-dispatch'
-"Plugin 'https://github.com/tpope/vim-projectionist'
+"Plugin 'tpope/vim-dispatch'
+"Plugin 'tpope/vim-projectionist'
 Plugin 'taglist.vim'
 Plugin 'tasklist.vim'
 
@@ -52,6 +52,11 @@ Plugin 'vim-scripts/indentpython.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'jnurmine/Zenburn'
 Plugin 'sjl/badwolf'
+
+"Git stuff
+Plugin 'tpope/vim-fugitive'
+Plugin 'jreybert/vimagit'
+Plugin 'airblade/vim-gitgutter'
 
 call vundle#end()
 " }}}
@@ -76,6 +81,15 @@ set shiftround
 set expandtab
 
 
+if has('mouse')
+    set mouse=a
+endif
+
+let s:uname = system("echo -n \"$(uname)\"")
+if !v:shell_error && s:uname == "linux" && !has('nvim')
+    set ttymouse=xterm
+endif
+
 filetype plugin indent on
 syntax on
 highlight BadWhitespace ctermbg=red guibg=red
@@ -98,21 +112,33 @@ set ignorecase
 set smartcase
 " }}}
 " Colorscheme {{{
-" set background=dark
-" colorscheme solarized
-" colorscheme badwolf
-" call togglebg#map("<F5>")
+try
+    set background=dark
+    colorscheme solarized
+    call togglebg#map("<F5>")
+catch
+    try
+        colorscheme badwolf
+    catch
+    endtry
+endtry
 " }}}
 " Movement {{{
+" Enable wrap movement by default
 nnoremap j gj
 nnoremap k gk
 nnoremap down dj
 nnoremap up gk
-
-map <up> <nop>
-map <down> <nop>
-map <left> <nop>
+" Disable Arrows key in normal mode
+map <up>    <nop>
+map <down>  <nop>
+map <left>  <nop>
 map <right> <nop>
+" Disable Arrows key in insert mode
+imap <up>    <nop>
+imap <down>  <nop>
+imap <left>  <nop>
+imap <right> <nop>
 " }}}
 " Windows navigation {{{
 nnoremap <C-J> <C-W><C-J>       " Down
@@ -165,11 +191,21 @@ map <C>+P :TlistToggle<CR>
 map T :TaskList<CR>
 " }}}
 " Rainbow Parenthese {{{
-au VimEnter * RainbowParenthesesToggle		" Toggle on/off
-au Syntax * RainbowParenthesesLoadRound		" () , default
-au Syntax * RainbowParenthesesLoadSquare	" []
-au Syntax * RainbowParenthesesLoadBraces	" {}
-au Syntax * RainbowParenthesesLoadChevrons	"<>
+if &rtp =~ 'rainbow_parentheses'
+    au VimEnter * RainbowParenthesesToggle		" Toggle on/off
+    au Syntax * RainbowParenthesesLoadRound		" () , default
+    au Syntax * RainbowParenthesesLoadSquare	" []
+    au Syntax * RainbowParenthesesLoadBraces	" {}
+    au Syntax * RainbowParenthesesLoadChevrons	"<>
+endif
+" }}}
+" Airline {{{
+    let g:airline_powerline_fonts = 1
+    if !exists('g:airline_symbols')
+        let g:airline_symbols = {}
+    endif
+" }}}
+" Vimgutter {{{
 " }}}
 " SimplyFold {{{
 let g:SimpylFold_docstring_preview=1
@@ -205,13 +241,13 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " Filetypes configuration {{{
 " ---- Python {{{
 au BufRead,BufNewFile *.py
-    \ set tabstop=4     |
-    \ set softtabstop=4 |
-    \ set shiftwidth=4  |
-    \ set textwidth=79  |
-    \ set expandtab     |
-    \ set autoindent    |
-    \ set fileformat=unix |
+    \ set tabstop=4         |
+    \ set softtabstop=4     |
+    \ set shiftwidth=4      |
+    \ set textwidth=79      |
+    \ set expandtab         |
+    \ set autoindent        |
+    \ set fileformat=unix   |
     \ set colorcolumn=120
 
 au BufRead,BufNewFile *.py,*.pyw,*.sh match BadWhitespace /\s\+$/
