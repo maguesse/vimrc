@@ -13,29 +13,39 @@ call vundle#begin()
 
 " Plugins {{{
 Plugin 'VundleVim/Vundle.vim' " required
+" General
+Plugin 'preservim/nerdtree'
+Plugin 'https://github.com/tpope/vim-surround'
+Plugin 'https://github.com/kien/rainbow_parentheses.vim'
+Plugin 'scrooloose/syntastic'
+"Plugin 'https://github.com/tpope/vim-repeat'
+"Plugin 'fholgado/minibufexpl.vim'
+Plugin 'tmhedberg/SimpylFold'
+Plugin 'vim-airline/vim-airline'
+Plugin 'Valloric/YouCompleteMe' " /!\ Requires Vim 7.4.1578+ /!\
+Plugin 'tpope/vim-fugitive'
+Plugin 'airblade/vim-gitgutter'
 
+" Clojure
 "Plugin 'https://github.com/tpope/vim-sexp-mappings-for-regular-people'
 "Plugin 'https://github.com/guns/vim-sexp'
-"Plugin 'https://github.com/tpope/vim-repeat'
-"Plugin 'https://github.com/tpope/vim-surround'
 "Plugin 'https://github.com/guns/vim-clojure-static'
 "Plugin 'https://github.com/tpope/vim-fireplace'
 "Plugin 'https://github.com/tpope/vim-salve'
-Plugin 'https://github.com/kien/rainbow_parentheses.vim'
-"Plugin 'https://github.com/tpope/vim-projectionist'
-"Plugin 'https://github.com/tpope/vim-dispatch'
 
-Plugin 'fholgado/minibufexpl.vim'
+" Project Management
+"Plugin 'https://github.com/tpope/vim-dispatch'
+"Plugin 'https://github.com/tpope/vim-projectionist'
 Plugin 'taglist.vim'
 Plugin 'tasklist.vim'
 
-"Plugin 'tmhedberg/SimpylFold'
 
 " Python stuff
 Plugin 'Vimjas/vim-python-pep8-indent'
 Plugin 'nvie/vim-flake8'
+Plugin 'vim-scripts/indentpython.vim'
+"Plugin 'cespare/vim-toml'
 
-Plugin 'scrooloose/syntastic'
 
 
 " Colorschemes
@@ -88,16 +98,21 @@ set ignorecase
 set smartcase
 " }}}
 " Colorscheme {{{
-set background=dark
+" set background=dark
 " colorscheme solarized
-colorscheme badwolf
-call togglebg#map("<F5>")
+" colorscheme badwolf
+" call togglebg#map("<F5>")
 " }}}
 " Movement {{{
 nnoremap j gj
 nnoremap k gk
 nnoremap down dj
 nnoremap up gk
+
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
 " }}}
 " Windows navigation {{{
 nnoremap <C-J> <C-W><C-J>       " Down
@@ -125,6 +140,18 @@ inoremap jk <esc>
 nnoremap <leader>ev :vsp $MYVIMRC<CR>
 " }}}
 " Plugins configuration {{{
+" {{{
+"let g:netrw_banner = 0
+"let g:netrw_liststyle = 3
+"let g:netrw_browse_split = 4
+"let g:netrw_winsize = 25
+"let g:netrw_atlv = 1
+"let g:netrw_list_hide = '.*\.swp$,__py_cache_$'
+"augroup ProjectDrawer
+"    autocmd!
+"    autocmd VimEnter * :Vexplore
+"augroup END
+" }}}
 " MiniBuffer {{{
 let g:miniBufExplMapWindowNavVim=1
 let g:miniBufExplMapWindowNavArrows=1
@@ -133,7 +160,7 @@ let g:miniBufExplModSelTarget=1
 " }}}
 " TagList {{{
 let Tlist_Ctags_Cmd='/usr/bin/ctags'    " Use Exuberant Ctags instead of GNU Ctags
-map P :TlistToggle<CR> 
+map <C>+P :TlistToggle<CR>
 " TaskList
 map T :TaskList<CR>
 " }}}
@@ -141,21 +168,51 @@ map T :TaskList<CR>
 au VimEnter * RainbowParenthesesToggle		" Toggle on/off
 au Syntax * RainbowParenthesesLoadRound		" () , default
 au Syntax * RainbowParenthesesLoadSquare	" []
-au Syntax * RainbowParenthesesLoadBraces	" {}	
+au Syntax * RainbowParenthesesLoadBraces	" {}
 au Syntax * RainbowParenthesesLoadChevrons	"<>
+" }}}
+" SimplyFold {{{
+let g:SimpylFold_docstring_preview=1
+" }}}
+
+" YouCompleteMe {{{
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+" }}}
+" {{{ Fugitive / GitGutter
+" Use fontawesome icons as signs
+let g:gitgutter_sign_added = '+'
+let g:gitgutter_sign_modified = '>'
+let g:gitgutter_sign_removed = '-'
+let g:gitgutter_sign_removed_first_line = '^'
+let g:gitgutter_sign_modified_removed = '<'
+set updatetime=250
+nmap <Leader>gn GitGutterNextHunk
+nmap <Leader>gp GitGutterPrevHunk
+" }}}
+" {{{ NERDTree
+" Open NERDTree when wim starts
+autocmd vimenter * NERDTree
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" Toggle NERDTree with CTRL+n
+map <C-n> :NERDTreeToggle<CR>
+" Close vim when NERDTree is this only window left
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " }}}
 " }}}
 " Filetypes configuration {{{
 " ---- Python {{{
 au BufRead,BufNewFile *.py
-	\ set tabstop=4     |
-	\ set softtabstop=4 |
-	\ set shiftwidth=4  |
-	\ set textwidth=79  |
-	\ set expandtab     |
-	\ set autoindent    |
-	\ set fileformat=unix |
-    \ set colorcolumn=80
+    \ set tabstop=4     |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4  |
+    \ set textwidth=79  |
+    \ set expandtab     |
+    \ set autoindent    |
+    \ set fileformat=unix |
+    \ set colorcolumn=120
 
 au BufRead,BufNewFile *.py,*.pyw,*.sh match BadWhitespace /\s\+$/
 au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
@@ -163,8 +220,21 @@ au FileType python set omnifunc=pythoncomplete#Complete
 au FileType python set foldmethod=indent " Folding - do not activate
 au FileType python setlocal commentstring=#\ %s
 
+au BufRead,BufNewFile *.toml setf dosini
+
 let python_highlight_all=1
+syntax on
+"python with virtualenv support
+" Not compatible ? with virtualenv handled by Poetry?
+"py << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+"  project_base_dir = os.environ['VIRTUAL_ENV']
+"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"  execfile(activate_this, dict(__file__=activate_this))
+"EOF
 " }}}
 " }}} FT
 
-" vim:foldmethod=marker:foldlevel=0
+"vim:foldmethod=marker:foldlevel=2
