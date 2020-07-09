@@ -5,6 +5,7 @@ filetype off      " required
 autocmd! bufwritepost .vimrc source %
 autocmd! bufwritepost vimrc source %
 
+scriptencoding=utf-8
 set encoding=utf-8
 set fileencoding=utf-8
 set termencoding=utf-8
@@ -25,6 +26,7 @@ Plugin 'scrooloose/syntastic'
 Plugin 'tmhedberg/SimpylFold'
 Plugin 'vim-airline/vim-airline'
 Plugin 'Valloric/YouCompleteMe' " /!\ Requires Vim 7.4.1578+ /!\
+Plugin 'ntpeters/vim-better-whitespace'
 
 " Clojure
 "Plugin 'tpope/vim-sexp-mappings-for-regular-people'
@@ -52,6 +54,7 @@ Plugin 'vim-scripts/indentpython.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'jnurmine/Zenburn'
 Plugin 'sjl/badwolf'
+Plugin 'sickill/vim-monokai'
 
 "Git stuff
 Plugin 'tpope/vim-fugitive'
@@ -92,8 +95,20 @@ endif
 
 filetype plugin indent on
 syntax on
-highlight BadWhitespace ctermbg=red guibg=red
+let g:better_whitespace_enabled = 1
+let g:strip_whitespace_on_save = 1
+nnoremap ]w :NextTrailingWhitespace<CR>
+nnoremap [w :PrevTrailingWhitespace<CR>
+"highlight ExtraWhitespace ctermbg=red guibg=red
+"au Colorscheme * highlight ExtraWhitespace ctermbg=red guibg=red
+"au Syntax * syn match ExtraWhitespace /\s\+$/
+"match ExtraWhitespace /\s\+$/
+"autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+"autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+"autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+"autocmd BufWinLeave * call clearmatches()
 " }}}
+
 " Folding {{{
 set foldmethod=syntax
 set foldnestmax=2
@@ -114,8 +129,9 @@ set smartcase
 " Colorscheme {{{
 try
     set background=dark
-    colorscheme solarized
-    call togglebg#map("<F5>")
+    "colorscheme solarized
+    colorscheme zenburn
+    "call togglebg#map("<F5>")
 catch
     try
         colorscheme badwolf
@@ -123,6 +139,7 @@ catch
     endtry
 endtry
 " }}}
+set listchars=eol:¬,trail:~,space:·,tab:>-
 " Movement {{{
 " Enable wrap movement by default
 nnoremap j gj
@@ -164,6 +181,9 @@ let mapleader=","
 inoremap jk <esc>
 
 nnoremap <leader>ev :vsp $MYVIMRC<CR>
+
+nnoremap <Tab> :bnext<CR>:redraw<CR>:ls<CR>
+nnoremap <S-Tab> :bprevious<CR>:redraw<CR>:ls<CR>
 " }}}
 " Plugins configuration {{{
 " {{{
@@ -250,8 +270,8 @@ au BufRead,BufNewFile *.py
     \ set fileformat=unix   |
     \ set colorcolumn=120
 
-au BufRead,BufNewFile *.py,*.pyw,*.sh match BadWhitespace /\s\+$/
-au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
+"au BufRead,BufNewFile *.py,*.pyw,*.sh match ExtraWhitespace /\s\+$/
+"au BufRead,BufNewFile *.py,*.pyw match ExtraWhitespace /^\t\+/
 au FileType python set omnifunc=pythoncomplete#Complete
 au FileType python set foldmethod=indent " Folding - do not activate
 au FileType python setlocal commentstring=#\ %s
